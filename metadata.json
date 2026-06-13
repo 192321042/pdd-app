@@ -1,0 +1,8 @@
+{
+  "name": "OmniGuard AI",
+  "description": "Real-time emergency detection using voice, behavioral, and motion analysis with automated SOS triggers and live location tracking features.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

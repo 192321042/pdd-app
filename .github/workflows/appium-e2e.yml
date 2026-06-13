@@ -1,0 +1,81 @@
+name: Mobile Appium E2E Automation
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  e2e-tests:
+    runs-on: macos-latest # macOS is required to spawn HAXM/virtualization emulator cleanly on GitHub Actions runner
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: 'automation/package.json'
+
+      - name: Setup Java JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android Emulator and System Image
+        run: |
+          sdkmanager --install "system-images;android-31;google_apis;x86_64"
+          echo "no" | avdmanager create avd --force --name pixel_emulator --device "pixel" --package "system-images;android-31;google_apis;x86_64"
+
+      - name: Launch Android Emulator
+        run: |
+          ${ANDROID_HOME}/emulator/emulator -avd pixel_emulator -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect &
+          adb wait-for-device
+          # Wait until device fully boots
+          BOOT_COMPLETED=""
+          while [ "$BOOT_COMPLETED" != "1" ]; do
+            BOOT_COMPLETED=$(adb shell getprop sys.boot_completed | tr -d '\r')
+            sleep 3
+          done
+          echo "Android Emulator is online and ready."
+
+      - name: Install Appium globally
+        run: |
+          npm install -g appium@latest
+          appium driver install uiautomator2
+
+      - name: Install automation framework dependencies
+        run: |
+          cd automation
+          npm install
+
+      - name: Start Appium Server in Background
+        run: |
+          appium --log logs/appium-server.log &
+          sleep 5
+
+      - name: Run E2E Test Suite
+        run: |
+          cd automation
+          # Set config environments
+          export EXECUTION_MODE=APK
+          export APK_PATH="../app/build/outputs/apk/debug/app-debug.apk"
+          npm test
+
+      - name: Upload Test Reports and Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: appium-execution-reports
+          path: |
+            automation/reports/
+            automation/excel/Mobile_E2E_Report.xlsx
+            automation/logs/
