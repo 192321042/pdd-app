@@ -30,45 +30,48 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install Android Emulator and System Image
-        run: |
-          sdkmanager --install "system-images;android-31;google_apis;x86_64"
-          echo "no" | avdmanager create avd --force --name pixel_emulator --device "pixel" --package "system-images;android-31;google_apis;x86_64"
+      - name: Setup Gradle Cache
+        uses: gradle/actions/setup-gradle@v4
 
-      - name: Launch Android Emulator
+      - name: Build Android Debug APK
         run: |
-          ${ANDROID_HOME}/emulator/emulator -avd pixel_emulator -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect &
-          adb wait-for-device
-          # Wait until device fully boots
-          BOOT_COMPLETED=""
-          while [ "$BOOT_COMPLETED" != "1" ]; do
-            BOOT_COMPLETED=$(adb shell getprop sys.boot_completed | tr -d '\r')
-            sleep 3
-          done
-          echo "Android Emulator is online and ready."
+          chmod +x gradlew
+          ./gradlew assembleDebug
 
-      - name: Install Appium globally
-        run: |
-          npm install -g appium@latest
-          appium driver install uiautomator2
-
-      - name: Install automation framework dependencies
-        run: |
-          cd automation
-          npm install
-
-      - name: Start Appium Server in Background
-        run: |
-          appium --log logs/appium-server.log &
-          sleep 5
-
-      - name: Run E2E Test Suite
-        run: |
-          cd automation
-          # Set config environments
-          export EXECUTION_MODE=APK
-          export APK_PATH="../app/build/outputs/apk/debug/app-debug.apk"
-          npm test
+      - name: Run E2E Tests on Android Emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 31
+          target: google_apis
+          arch: arm64-v8a
+          profile: pixel
+          script: |
+            # Install automation dependencies (includes local appium)
+            cd automation
+            npm install
+            
+            # Install Appium driver
+            npx appium driver install uiautomator2
+            
+            # Start Appium Server in Background
+            mkdir -p logs
+            npx appium --log logs/appium-server.log &
+            
+            # Wait for Appium Server to start
+            sleep 10
+            
+            # Run test suite
+            export EXECUTION_MODE=APK
+            export APK_PATH="../app/build/outputs/apk/debug/app-debug.apk"
+            set +e
+            npm test
+            TEST_EXIT_CODE=$?
+            
+            # Generate GitHub Actions Job Summary with test results
+            node utilities/generate_github_summary.js
+            
+            # Exit with original test suite status code
+            exit $TEST_EXIT_CODE
 
       - name: Upload Test Reports and Logs
         if: always()
