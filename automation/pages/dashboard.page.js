@@ -6,11 +6,11 @@ class DashboardPage extends BasePage {
     super(driver);
 
     // Bottom Navigation Bar Selectors
-    this.navHome = '//*[@content-desc="Home"]';
-    this.navAiStatus = '//*[@content-desc="AI Status"]';
-    this.navGuardians = '//*[@content-desc="Guardians"]';
-    this.navAiChat = '//*[@content-desc="AI Chat"]';
-    this.navSettings = '//*[@content-desc="Settings"]';
+    this.navHome = '//*[contains(@content-desc, "Home") or @text="Home"]';
+    this.navAiStatus = '//*[contains(@content-desc, "AI Status") or @text="AI Status"]';
+    this.navGuardians = '//*[contains(@content-desc, "Guardians") or @text="Guardians"]';
+    this.navAiChat = '//*[contains(@content-desc, "AI Chat") or @text="AI Chat"]';
+    this.navSettings = '//*[contains(@content-desc, "Settings") or @text="Settings"]';
 
     // UI Dashboard Components
     this.appSlogan = '//*[@text="OmniGuard AI"]';
