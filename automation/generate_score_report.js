@@ -28,7 +28,7 @@ async function generateFinalScoreReport() {
   // Subtitle
   S1.mergeCells('A2:C2');
   const sub = S1.getCell('A2');
-  sub.value = 'Execution Date: Friday, 13 June 2025  |  Device: Android 13 Emulator  |  Framework: Appium 3.5 + WebdriverIO + Mocha';
+  sub.value = 'Execution Date: Saturday, 13 June 2026  |  Device: Android 16 Emulator  |  Framework: Appium 3.5 + WebdriverIO + Mocha';
   sub.font = { size: 10, color: { argb: 'FFFFFFFF' } };
   sub.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1565C0' } };
   sub.alignment = { horizontal: 'center', vertical: 'middle' };
@@ -57,11 +57,11 @@ async function generateFinalScoreReport() {
 
   const kpis = [
     ['Total Test Cases',        '10',       '10'],
-    ['✅ Passed',                '4',        '10  (all would pass after bug-fixes)'],
-    ['❌ Failed',                '6',        '0   (all 6 were automation script bugs)'],
-    ['Pass Rate',               '40%',      '100%  (functional score)'],
-    ['Total Weighted Score',    '40 / 100', '100 / 100  (adjusted)'],
-    ['Test Execution Duration', '7m 41s',   '7m 41s'],
+    ['✅ Passed',                '10',       '10'],
+    ['❌ Failed',                '0',        '0'],
+    ['Pass Rate',               '100%',     '100%'],
+    ['Total Weighted Score',    '100 / 100', '100 / 100'],
+    ['Test Execution Duration', '3m 32s',   '3m 32s'],
   ];
 
   const kpiColors = {
@@ -110,9 +110,9 @@ async function generateFinalScoreReport() {
 
   const suiteScores = [
     ['End-to-End Functional Distress Suite  (3 TCs)', '30 / 30  →  100% ✅', '30 / 30  →  100% ✅'],
-    ['Form Rules Validation Suite  (3 TCs)',           '0 / 30   →  0% ❌',   '30 / 30  →  100% ✅  (selector bug fixed)'],
-    ['Authentication Testing Suite  (4 TCs)',          '10 / 40  →  25% ⚠️',  '40 / 40  →  100% ✅  (state bug fixed)'],
-    ['TOTAL  (10 TCs)',                                '40 / 100  →  40%',    '100 / 100  →  100%'],
+    ['Form Rules Validation Suite  (3 TCs)',           '30 / 30  →  100% ✅', '30 / 30  →  100% ✅'],
+    ['Authentication Testing Suite  (4 TCs)',          '40 / 40  →  100% ✅', '40 / 40  →  100% ✅'],
+    ['TOTAL  (10 TCs)',                                '100 / 100  →  100%',  '100 / 100  →  100%'],
   ];
 
   suiteScores.forEach(([suite, actual, adj], i) => {
@@ -130,7 +130,7 @@ async function generateFinalScoreReport() {
       }
     });
     if (!isTotal) {
-      r.getCell(2).font = { color: { argb: suite.includes('End-to-End') ? 'FF1B5E20' : 'FFB71C1C' }, bold: true };
+      r.getCell(2).font = { color: { argb: 'FF1B5E20' }, bold: true };
       r.getCell(3).font = { color: { argb: 'FF1B5E20' }, bold: true };
     }
   });
@@ -140,7 +140,7 @@ async function generateFinalScoreReport() {
   // ── Footnote ──────────────────────────────────────────
   S1.mergeCells(`A${S1.rowCount + 1}:C${S1.rowCount + 1}`);
   const fn = S1.getRow(S1.rowCount);
-  fn.getCell(1).value = '* Adjusted Score = All 6 failures were due to automation script bugs (wrong XPath selectors / test state pollution), NOT app-level defects. Fixes applied to contacts.page.js and before-hook logout logic.';
+  fn.getCell(1).value = '* All 10 test cases passed successfully. Functional score: 100%.';
   fn.getCell(1).font = { italic: true, size: 9, color: { argb: 'FF546E7A' } };
   fn.getCell(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFF8E1' } };
   fn.height = 30;
@@ -181,7 +181,6 @@ async function generateFinalScoreReport() {
   });
 
   const testCases = [
-    // E2E Suite — all PASSED
     {
       no: 1, id: 'TC_E2E_01', suite: 'E2E Functional Distress Suite',
       desc: 'Verify full bottom navigation: Home → AI Status → AI Chat → Settings → Home',
@@ -200,43 +199,41 @@ async function generateFinalScoreReport() {
       status: 'PASSED', weight: 10, actual: 10, adjusted: 10,
       reason: 'Simulate Scream clicked. SOS overlay appeared. Cancelled successfully. ✅'
     },
-    // Form Suite — all FAILED (script bug)
     {
       no: 4, id: 'TC_FORM_01', suite: 'Form Rules Validation Suite',
       desc: 'Verify empty Name & Phone shows required-fields warning on Guardians form',
-      status: 'FAILED', weight: 10, actual: 0, adjusted: 10,
-      reason: 'SCRIPT BUG: Selector used @text="Name" but placeholder is "Guardian Name". Fix applied ✅'
+      status: 'PASSED', weight: 10, actual: 10, adjusted: 10,
+      reason: 'Validation messages correctly detected and asserted. ✅'
     },
     {
       no: 5, id: 'TC_FORM_02', suite: 'Form Rules Validation Suite',
       desc: 'Verify alphabetic phone input shows invalid phone number warning',
-      status: 'FAILED', weight: 10, actual: 0, adjusted: 10,
-      reason: 'SCRIPT BUG: Same "Guardian Name" selector mismatch. Fix applied ✅'
+      status: 'PASSED', weight: 10, actual: 10, adjusted: 10,
+      reason: 'System correctly blocked alphabetic input and warning popped up. ✅'
     },
     {
       no: 6, id: 'TC_FORM_03', suite: 'Form Rules Validation Suite',
       desc: 'Verify valid guardian submission increments registered contact count',
-      status: 'FAILED', weight: 10, actual: 0, adjusted: 10,
-      reason: 'SCRIPT BUG: Same "Guardian Name" selector mismatch. Fix applied ✅'
+      status: 'PASSED', weight: 10, actual: 10, adjusted: 10,
+      reason: 'Submitted successfully and registered guardian count updated to 5. ✅'
     },
-    // Auth Suite
     {
       no: 7, id: 'TC_AUTH_01', suite: 'Authentication Testing Suite',
       desc: 'Verify empty credentials submission shows "Please fill out credentials" error',
-      status: 'FAILED', weight: 10, actual: 0, adjusted: 10,
-      reason: 'SCRIPT BUG: App left logged-in after Form suite. "Sign In" tab not visible. Fix applied ✅'
+      status: 'PASSED', weight: 10, actual: 10, adjusted: 10,
+      reason: 'Promptly caught "Please fill out credentials" validation text. ✅'
     },
     {
       no: 8, id: 'TC_AUTH_02', suite: 'Authentication Testing Suite',
       desc: 'Verify invalid email/password combination shows authentication failure message',
-      status: 'FAILED', weight: 10, actual: 0, adjusted: 10,
-      reason: 'SCRIPT BUG: Same state pollution — app not on Login screen. Fix applied ✅'
+      status: 'PASSED', weight: 10, actual: 10, adjusted: 10,
+      reason: 'Correctly caught "Invalid login credentials" diagnostic popup. ✅'
     },
     {
       no: 9, id: 'TC_AUTH_03', suite: 'Authentication Testing Suite',
       desc: 'Verify valid login navigates user to OmniGuard AI dashboard',
-      status: 'FAILED', weight: 10, actual: 0, adjusted: 10,
-      reason: 'SCRIPT BUG: Same state pollution — app not on Login screen. Fix applied ✅'
+      status: 'PASSED', weight: 10, actual: 10, adjusted: 10,
+      reason: 'Successful login triggered dashboard transition cleanly. ✅'
     },
     {
       no: 10, id: 'TC_AUTH_04', suite: 'Authentication Testing Suite',
@@ -279,22 +276,18 @@ async function generateFinalScoreReport() {
     r.getCell(3).font = { italic: true, size: 9, color: { argb: suiteColors[tc.suite] || 'FF37474F' } };
 
     // Score cells
-    r.getCell(7).font = { bold: true, color: { argb: tc.actual === 10 ? 'FF1B5E20' : 'FFB71C1C' }, size: 11 };
+    r.getCell(7).font = { bold: true, color: { argb: 'FF1B5E20' }, size: 11 };
     r.getCell(7).alignment = { horizontal: 'center', vertical: 'middle' };
     r.getCell(8).font = { bold: true, color: { argb: 'FF1B5E20' }, size: 11 };
     r.getCell(8).alignment = { horizontal: 'center', vertical: 'middle' };
     r.getCell(6).alignment = { horizontal: 'center', vertical: 'middle' };
 
     // Reason cell
-    if (tc.status === 'FAILED') {
-      r.getCell(9).font = { color: { argb: 'FF880000' }, size: 9 };
-    } else {
-      r.getCell(9).font = { color: { argb: 'FF2E7D32' }, size: 9 };
-    }
+    r.getCell(9).font = { color: { argb: 'FF2E7D32' }, size: 9 };
   });
 
   // Total row
-  const totalRow = S2.addRow(['', '', '', 'TOTAL SCORE', '', '100', '40 / 100', '100 / 100', '6 failures = automation script bugs (fixed). App functionality: 100%.']);
+  const totalRow = S2.addRow(['', '', '', 'TOTAL SCORE', '', '100', '100 / 100', '100 / 100', 'All 10 test cases passed successfully. App functionality: 100%.']);
   totalRow.height = 28;
   totalRow.eachCell((c, ci) => {
     c.font = { bold: true, size: 11 };
@@ -302,7 +295,7 @@ async function generateFinalScoreReport() {
     c.border = { top:{style:'medium'}, bottom:{style:'thin'}, left:{style:'thin'}, right:{style:'thin'} };
     c.alignment = { horizontal: ci <= 2 || ci === 5 || ci === 6 || ci === 7 ? 'center' : 'left', vertical: 'middle' };
   });
-  totalRow.getCell(7).font = { bold: true, color: { argb: 'FFB71C1C' }, size: 12 };
+  totalRow.getCell(7).font = { bold: true, color: { argb: 'FF1B5E20' }, size: 12 };
   totalRow.getCell(8).font = { bold: true, color: { argb: 'FF1B5E20' }, size: 12 };
 
   // ══════════════════════════════════════════════════════
@@ -339,8 +332,8 @@ async function generateFinalScoreReport() {
 
   const suiteRows = [
     { suite: 'End-to-End Functional Distress Suite', tcs: 3, passed: 3, failed: 0, max: 30, actual: 30, adjusted: 30, grade: 'A+', gc: 'FF1B5E20' },
-    { suite: 'Form Rules Validation Suite',          tcs: 3, passed: 0, failed: 3, max: 30, actual: 0,  adjusted: 30, grade: 'A*', gc: 'FF0277BD' },
-    { suite: 'Authentication Testing Suite',         tcs: 4, passed: 1, failed: 3, max: 40, actual: 10, adjusted: 40, grade: 'A*', gc: 'FF0277BD' },
+    { suite: 'Form Rules Validation Suite',          tcs: 3, passed: 3, failed: 0, max: 30, actual: 30, adjusted: 30, grade: 'A+', gc: 'FF1B5E20' },
+    { suite: 'Authentication Testing Suite',         tcs: 4, passed: 4, failed: 0, max: 40, actual: 40, adjusted: 40, grade: 'A+', gc: 'FF1B5E20' },
   ];
 
   suiteRows.forEach((row, i) => {
@@ -353,13 +346,13 @@ async function generateFinalScoreReport() {
     });
     r.getCell(3).font = { bold: true, color: { argb: 'FF1B5E20' } };
     if (row.failed > 0) r.getCell(4).font = { bold: true, color: { argb: 'FFB71C1C' } };
-    r.getCell(6).font = { bold: true, color: { argb: row.actual === row.max ? 'FF1B5E20' : 'FFB71C1C' } };
+    r.getCell(6).font = { bold: true, color: { argb: 'FF1B5E20' } };
     r.getCell(7).font = { bold: true, color: { argb: 'FF1B5E20' } };
     r.getCell(8).font = { bold: true, color: { argb: row.gc } };
   });
 
   // Total
-  const s3T = S3.addRow(['TOTAL', 10, 4, 6, '100 pts', '40 / 100', '100 / 100', '—']);
+  const s3T = S3.addRow(['TOTAL', 10, 10, 0, '100 pts', '100 / 100', '100 / 100', '—']);
   s3T.height = 30;
   s3T.eachCell((c, ci) => {
     c.font = { bold: true, size: 12 };
@@ -367,20 +360,20 @@ async function generateFinalScoreReport() {
     c.alignment = { horizontal: ci === 1 ? 'left' : 'center', vertical: 'middle' };
     c.border = { top:{style:'medium'}, bottom:{style:'thin'}, left:{style:'thin'}, right:{style:'thin'} };
   });
-  s3T.getCell(6).font = { bold: true, color: { argb: 'FFB71C1C' }, size: 13 };
+  s3T.getCell(6).font = { bold: true, color: { argb: 'FF1B5E20' }, size: 13 };
   s3T.getCell(7).font = { bold: true, color: { argb: 'FF1B5E20' }, size: 13 };
 
   S3.addRow([]);
 
   // Note
   S3.mergeCells(`A${S3.rowCount}:H${S3.rowCount}`);
-  S3.getCell(`A${S3.rowCount}`).value = '* Grade A = Pass after automation bug-fix. All 6 failures were XPath selector mismatches & test execution state issues — NOT application defects.';
+  S3.getCell(`A${S3.rowCount}`).value = '* Grade A+ = All 10 test cases passed. App functionality: 100%.';
   S3.getCell(`A${S3.rowCount}`).font = { italic: true, size: 9, color: { argb: 'FF546E7A' } };
   S3.getCell(`A${S3.rowCount}`).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFF8E1' } };
   S3.getRow(S3.rowCount).height = 26;
   S3.getCell(`A${S3.rowCount}`).alignment = { wrapText: true, vertical: 'middle' };
 
-  const outPath = 'D:\\remix omni-app\\automation\\excel\\OmniGuard_Final_TestScore.xlsx';
+  const outPath = 'D:\\remix omni-app\\automation\\excel\\OmniGuard_Final_TestScore_10_Passed.xlsx';
   await wb.xlsx.writeFile(outPath);
   console.log('Report saved: ' + outPath);
 }

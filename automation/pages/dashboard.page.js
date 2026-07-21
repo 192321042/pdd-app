@@ -6,11 +6,11 @@ class DashboardPage extends BasePage {
     super(driver);
 
     // Bottom Navigation Bar Selectors
-    this.navHome = '//*[@text="Home"]';
-    this.navAiStatus = '//*[@text="AI Status"]';
-    this.navGuardians = '//*[@text="Guardians"]';
-    this.navAiChat = '//*[@text="AI Chat"]';
-    this.navSettings = '//*[@text="Settings"]';
+    this.navHome = '//*[@content-desc="Home"]';
+    this.navAiStatus = '//*[@content-desc="AI Status"]';
+    this.navGuardians = '//*[@content-desc="Guardians"]';
+    this.navAiChat = '//*[@content-desc="AI Chat"]';
+    this.navSettings = '//*[@content-desc="Settings"]';
 
     // UI Dashboard Components
     this.appSlogan = '//*[@text="OmniGuard AI"]';
@@ -22,7 +22,7 @@ class DashboardPage extends BasePage {
     this.extendedFabSos = '//*[contains(@content-desc, "SOS Alert Signal") or @text="Panic SOS" or contains(@content-desc, "Panic SOS")]';
     this.centralSosBtn = '//*[contains(@content-desc, "Distress Trigger") or @text="SOS" or contains(@content-desc, "SOS")]';
     this.sosCountdown = '//android.widget.TextView[parent::android.view.View and string-length(@text) <= 2]'; // represents countdown digits like '10', '9'
-    this.cancelSosBtn = '//*[@text="False Alert (Dismiss)" or @text="Deactivate Panic Beacon (False Alert)" or @text="TAP TO CANCEL"]';
+    this.cancelSosBtn = '//*[contains(@text, "Deactivate") or contains(@text, "False Alert") or contains(@text, "TAP TO CANCEL") or contains(@content-desc, "Cancel Alert")]';
     
     // Performance assessment selectors
     this.sensorVitalsTitle = '//*[@text="Vitals Assessment Metrics"]';

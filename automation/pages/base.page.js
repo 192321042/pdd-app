@@ -24,18 +24,44 @@ class BasePage {
       await el.waitForDisplayed({ timeout });
       return el;
     } catch (err) {
-      // Check if there is a system ANR dialog blocking
+      // Check if there is a system ANR dialog or permission/SMS dialog blocking
       try {
+        await this.driver.setTimeouts(0);
+
+        const allowBtn = await this.driver.$('//*[@text="Allow" or @text="ALLOW" or @resource-id="android:id/button1"]');
+        if (await allowBtn.isDisplayed().catch(() => false)) {
+          logger.warn('System Allow/Permission dialog detected. Clicking "Allow" and retrying...');
+          await allowBtn.click();
+          await this.driver.pause(2000);
+
+          // Restore implicit wait to wait for element
+          const config = require('../config/appium.config');
+          await this.driver.setTimeouts(config.timeouts.implicit);
+          await el.waitForDisplayed({ timeout: 5000 });
+          return el;
+        }
+
         const waitBtn = await this.driver.$('//*[(@class="android.widget.Button" or @class="android.widget.TextView") and (translate(@text, "WAIT", "wait")="wait" or @resource-id="android:id/button2")]');
         if (await waitBtn.isDisplayed().catch(() => false)) {
           logger.warn('System ANR dialog detected. Clicking "Wait" and retrying...');
           await waitBtn.click();
           await this.driver.pause(2000);
+          
+          // Restore implicit wait to wait for element
+          const config = require('../config/appium.config');
+          await this.driver.setTimeouts(config.timeouts.implicit);
           await el.waitForDisplayed({ timeout: 5000 });
           return el;
         }
       } catch (anrErr) {
-        logger.error(`Error handling ANR dialog: ${anrErr.message}`);
+        logger.error(`Error handling system/ANR dialog: ${anrErr.message}`);
+      } finally {
+        try {
+          const config = require('../config/appium.config');
+          await this.driver.setTimeouts(config.timeouts.implicit);
+        } catch (restoreErr) {
+          // Ignore
+        }
       }
       throw err;
     }
@@ -56,6 +82,11 @@ class BasePage {
   async type(selector, value) {
     const el = await this.waitForElementDisplayed(selector);
     logger.info(`Typing "${value}" into element: [${selector}]`);
+    try {
+      await el.clearValue();
+    } catch (err) {
+      logger.warn(`Could not clear element value: ${err.message}`);
+    }
     await el.setValue(value);
   }
 

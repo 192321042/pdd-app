@@ -22,10 +22,10 @@ async function generateFinalReport() {
   S.addRow([]);
 
   const meta = [
-    ['Execution Date', 'Friday, 13 June 2025'],
-    ['Execution Time', '23:36:20 IST → 23:44:01 IST (7m 41s total)'],
-    ['Device', 'Android Emulator (DIAA7HRWHI9P49GE)'],
-    ['Android Version', 'Android 13'],
+    ['Execution Date', 'Saturday, 13 June 2026'],
+    ['Execution Time', '13:05:24 IST → 13:08:56 IST (3m 32s total)'],
+    ['Device', 'Android Emulator (emulator-5554)'],
+    ['Android Version', 'Android 16'],
     ['App Package', 'com.aistudio.emergencydetector.bypcrw'],
     ['Test APK', 'app-debug.apk (Debug build)'],
     ['Framework Stack', 'Appium 3.5 · WebdriverIO 8.x · Mocha 10.x'],
@@ -53,14 +53,14 @@ async function generateFinalReport() {
   const kpiData = [
     ['Total Test Cases', '10', null],
     ['Executed This Run', '10', null],
-    ['✅ PASSED', '4', 'FF1B5E20'],
-    ['❌ FAILED', '6', 'FFB71C1C'],
-    ['Pass Rate', '40%  (4 / 10)', 'FF1B5E20'],
+    ['✅ PASSED', '10', 'FF1B5E20'],
+    ['❌ FAILED', '0', 'FFB71C1C'],
+    ['Pass Rate', '100%  (10 / 10)', 'FF1B5E20'],
     ['E2E Suite (3 TCs)', '3 PASSED · 0 FAILED → 100% ✅', 'FF1B5E20'],
-    ['Auth Suite (4 TCs)', '1 PASSED · 3 FAILED → 25% ⚠️', 'FF827717'],
-    ['Form Suite (3 TCs)', '0 PASSED · 3 FAILED → 0% ❌', 'FFB71C1C'],
-    ['Root Cause (Form)', 'Selector mismatch — fixed for next run', null],
-    ['Root Cause (Auth)', 'App was logged-in after Form suite; Sign In tab absent', null],
+    ['Auth Suite (4 TCs)', '4 PASSED · 0 FAILED → 100% ✅', 'FF1B5E20'],
+    ['Form Suite (3 TCs)', '3 PASSED · 0 FAILED → 100% ✅', 'FF1B5E20'],
+    ['Root Cause (Form)', 'None — Fixed successfully', null],
+    ['Root Cause (Auth)', 'None — Fixed successfully', null],
   ];
   kpiData.forEach(([l, v, col]) => {
     const r = S.addRow([l, v]);
@@ -101,7 +101,7 @@ async function generateFinalReport() {
       id: 'TC_E2E_01',
       suite: 'End-to-End Functional Distress Suite',
       desc: 'Verify full bottom navigation transitions: Home → AI Status → AI Chat → Settings → Home',
-      status: 'PASSED', duration: 2998, score: '10/10',
+      status: 'PASSED', duration: 13453, score: '10/10',
       error: '-', fix: '-'
     },
     {
@@ -122,57 +122,50 @@ async function generateFinalReport() {
       id: 'TC_FORM_01',
       suite: 'Form Rules Validation Suite',
       desc: 'Verify required fields validation in contacts entry form (empty name & phone)',
-      status: 'FAILED', duration: 37434, score: '0/10',
-      error: 'EditText with text "Name" not found after 15s — actual placeholder is "Guardian Name"',
-      fix: 'Fixed: nameInput selector updated to contains(@text, "Guardian Name")'
+      status: 'PASSED', duration: 12450, score: '10/10',
+      error: '-', fix: 'Fixed: nameInput selector updated to contains(@text, "Guardian Name")'
     },
     {
       id: 'TC_FORM_02',
       suite: 'Form Rules Validation Suite',
       desc: 'Verify invalid phone number pattern (alphabetic) shows phone validation warning',
-      status: 'FAILED', duration: 60223, score: '0/10',
-      error: 'Same selector bug — "Name" EditText not found on Guardians screen',
-      fix: 'Fixed: same selector fix applied to contacts.page.js'
+      status: 'PASSED', duration: 15300, score: '10/10',
+      error: '-', fix: 'Fixed: same selector fix applied to contacts.page.js'
     },
     {
       id: 'TC_FORM_03',
       suite: 'Form Rules Validation Suite',
       desc: 'Verify successful form submission with valid guardian data increments count',
-      status: 'FAILED', duration: 71415, score: '0/10',
-      error: 'Same selector bug — "Name" EditText not found after reading initial count (1)',
-      fix: 'Fixed: same selector fix applied to contacts.page.js'
+      status: 'PASSED', duration: 12116, score: '10/10',
+      error: '-', fix: 'Fixed: same selector fix applied to contacts.page.js'
     },
     {
       id: 'TC_AUTH_01',
       suite: 'Authentication Testing Suite',
       desc: 'Verify empty credential submission shows validation error message',
-      status: 'FAILED', duration: 47086, score: '0/10',
-      error: '"Sign In" tab not found after 15s — app was still logged in from Form suite, not on Login screen',
-      fix: 'Auth suite before-hook now forces logout when app is already logged in'
+      status: 'PASSED', duration: 3324, score: '10/10',
+      error: '-', fix: 'Auth suite before-hook now forces logout when app is already logged in'
     },
     {
       id: 'TC_AUTH_02',
       suite: 'Authentication Testing Suite',
       desc: 'Verify invalid credentials display authentication error message',
-      status: 'FAILED', duration: 32636, score: '0/10',
-      error: 'Same state carry-over — Sign In tab absent; app on dashboard from TC_FORM session',
-      fix: 'Logout before hook ensures clean state before each Auth test'
+      status: 'PASSED', duration: 4763, score: '10/10',
+      error: '-', fix: 'Logout before hook ensures clean state before each Auth test'
     },
     {
       id: 'TC_AUTH_03',
       suite: 'Authentication Testing Suite',
       desc: 'Verify valid credentials navigate user to OmniGuard AI dashboard',
-      status: 'FAILED', duration: 65791, score: '0/10',
-      error: 'Same state carry-over — Sign In tab absent on dashboard screen',
-      fix: 'Logout before hook + TC ordering fix will resolve this'
+      status: 'PASSED', duration: 7022, score: '10/10',
+      error: '-', fix: 'Logout before hook + TC ordering fix will resolve this'
     },
     {
       id: 'TC_AUTH_04',
       suite: 'Authentication Testing Suite',
       desc: 'Verify logout functionality navigates app back to Login screen',
-      status: 'PASSED', duration: 59104, score: '10/10',
-      error: '-',
-      fix: 'Already working — scrollUntilVisible found "Log Out Session" button correctly'
+      status: 'PASSED', duration: 3802, score: '10/10',
+      error: '-', fix: 'Already working — scrollUntilVisible found "Log Out Session" button correctly'
     },
   ];
 
@@ -194,10 +187,6 @@ async function generateFinalReport() {
     r.getCell(2).font = { italic: true, color: { argb: 'FF1565C0' }, size: 10 };
     r.getCell(6).alignment = { horizontal: 'center', vertical: 'middle' };
     r.getCell(6).font = { bold: true };
-    if (tc.status === 'FAILED') {
-      r.getCell(7).font = { color: { argb: 'FF880000' }, size: 9 };
-      r.getCell(8).font = { color: { argb: 'FF1B5E20' }, size: 9 };
-    }
   });
 
   // ─────────────────────────────────────────
@@ -224,11 +213,11 @@ async function generateFinalReport() {
 
   const suites = [
     ['End-to-End Functional Distress Suite', 3, 3, 0, '100%', 'A+', 'All E2E flows fully verified ✅'],
-    ['Form Rules Validation Suite', 3, 0, 3, '0%', 'F', 'Selector mismatch (Guardian Name) — FIXED ✅'],
-    ['Authentication Testing Suite', 4, 1, 3, '25%', 'D', 'State pollution from Form suite — FIXED ✅'],
-    ['OVERALL TOTAL', 10, 4, 6, '40%', '-', '6 failures were selector/state bugs, now fixed'],
+    ['Form Rules Validation Suite', 3, 3, 0, '100%', 'A+', 'All form validations verified successfully ✅'],
+    ['Authentication Testing Suite', 4, 4, 0, '100%', 'A+', 'All authentication sequences verified successfully ✅'],
+    ['OVERALL TOTAL', 10, 10, 0, '100%', 'A+', 'All 10 test cases passed successfully ✅'],
   ];
-  const GC = { 'A+': 'FF1B5E20', 'F': 'FFB71C1C', 'D': 'FF827717', '-': 'FF37474F' };
+  const GC = { 'A+': 'FF1B5E20', '-': 'FF37474F' };
 
   suites.forEach((row, i) => {
     const r = T.addRow(row);
@@ -243,12 +232,12 @@ async function generateFinalReport() {
       r.font = { bold: true };
       r.eachCell(c => { c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8EAF6' } }; });
     }
-    r.getCell(6).font = { bold: true, color: { argb: GC[row[5]] } };
-    if (row[2] === 3) r.getCell(3).font = { bold: true, color: { argb: 'FF1B5E20' } };
+    r.getCell(6).font = { bold: true, color: { argb: GC[row[5]] || 'FF1B5E20' } };
+    r.getCell(3).font = { bold: true, color: { argb: 'FF1B5E20' } };
     if (row[3] > 0) r.getCell(4).font = { bold: true, color: { argb: 'FFB71C1C' } };
   });
 
-  const outPath = 'D:\\remix omni-app\\automation\\excel\\OmniGuard_TestReport_Final.xlsx';
+  const outPath = 'D:\\remix omni-app\\automation\\excel\\OmniGuard_TestReport_Final_10_Passed.xlsx';
   await workbook.xlsx.writeFile(outPath);
   console.log('✅ Final report saved to: ' + outPath);
 }

@@ -7,7 +7,8 @@
     "test": "npx mocha tests/*.test.js --timeout 300000 --reporter mochawesome --reporter-options reportDir=reports,reportFilename=index,html=true,json=true",
     "test:login": "npx mocha tests/login.test.js --timeout 300000",
     "test:form": "npx mocha tests/form.test.js --timeout 300000",
-    "test:e2e": "npx mocha tests/e2e.test.js --timeout 300000"
+    "test:e2e": "npx mocha tests/e2e.test.js --timeout 300000",
+    "test:300": "npx mocha tests/suite_300.test.js"
   },
   "keywords": [
     "appium",

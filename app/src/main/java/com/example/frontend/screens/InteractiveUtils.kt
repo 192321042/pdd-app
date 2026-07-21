@@ -146,26 +146,6 @@ fun SosScreen(viewModel: EmergencyViewModel, onDismiss: () -> Unit) {
 
             Button(
                 onClick = {
-                    viewModel.broadcastWhatsAppViaSystemApp(context)
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF25D366)), // WhatsApp Brand Green
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Send,
-                    contentDescription = "Manual Send WhatsApp",
-                    tint = Color.White
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Share Manual SOS Alert on WhatsApp", fontWeight = FontWeight.Bold)
-            }
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Button(
-                onClick = {
                     viewModel.cancelActiveSos()
                     onDismiss()
                 },

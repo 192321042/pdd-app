@@ -19,7 +19,13 @@ class DriverFactory {
       for (let i = 1; i < lines.length; i++) {
         const parts = lines[i].split('\t');
         if (parts.length >= 2 && parts[1] === 'device') {
-          devices.push(parts[0]);
+          const serial = parts[0];
+          // Only select emulators to avoid using physical devices
+          if (serial.startsWith('emulator-') || serial.startsWith('127.0.0.1') || serial.includes('localhost')) {
+            devices.push(serial);
+          } else {
+            logger.info(`Ignoring physical/non-emulator device: ${serial}`);
+          }
         }
       }
 
@@ -58,6 +64,8 @@ class DriverFactory {
       caps['appium:udid'] = device.udid;
       caps['appium:platformVersion'] = device.version;
       caps['appium:deviceName'] = device.udid;
+    } else {
+      throw new Error('No active Android emulator (emulator-*, 127.0.0.1, or localhost) detected. Running on physical devices is strictly disabled.');
     }
 
     // Configure Execution Mode (APK vs INSTALLED)

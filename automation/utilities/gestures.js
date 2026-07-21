@@ -109,7 +109,7 @@ class Gestures {
   static async swipeUp(driver, percentage = 0.8) {
     logger.info('Performing Swipe Up');
     const { width, height } = await driver.getWindowSize();
-    const x = Math.floor(width / 2);
+    const x = Math.floor(width * 0.15);
     const startY = Math.floor(height * percentage);
     const endY = Math.floor(height * (1 - percentage));
     await this.swipe(driver, x, startY, x, endY);
@@ -118,7 +118,7 @@ class Gestures {
   static async swipeDown(driver, percentage = 0.8) {
     logger.info('Performing Swipe Down');
     const { width, height } = await driver.getWindowSize();
-    const x = Math.floor(width / 2);
+    const x = Math.floor(width * 0.15);
     const startY = Math.floor(height * (1 - percentage));
     const endY = Math.floor(height * percentage);
     await this.swipe(driver, x, startY, x, endY);

@@ -19,7 +19,7 @@ class ContactsPage extends BasePage {
 
     // List and Delete buttons
     this.contactsTitle = '//android.widget.TextView[contains(@text, "Registered Guardians")]';
-    this.deleteBtn = '//android.widget.Button[contains(@content-desc, "Remove contact") or contains(@content-desc, "Delete")]';
+    this.deleteBtn = '//*[contains(@content-desc, "Remove contact") or contains(@content-desc, "Delete")]';
   }
 
   async addContact(name, phone, relationship = 'Family', isPrimary = true) {
@@ -59,6 +59,8 @@ class ContactsPage extends BasePage {
 
   async removeFirstContact() {
     logger.info('Removing first emergency contact from list');
+    const Gestures = require('../utilities/gestures');
+    await Gestures.scrollUntilVisible(this.driver, this.deleteBtn);
     await this.click(this.deleteBtn);
   }
 

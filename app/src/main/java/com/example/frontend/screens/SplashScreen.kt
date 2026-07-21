@@ -788,7 +788,7 @@ fun ResetPasswordScreen(
                 value = password,
                 onValueChange = { password = it; errorText = "" },
                 label = { Text("New Password") },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag("new_password_input"),
                 shape = RoundedCornerShape(12.dp),
                 visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation(),
                 keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
@@ -802,7 +802,7 @@ fun ResetPasswordScreen(
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it; errorText = "" },
                 label = { Text("Confirm New Password") },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag("confirm_password_input"),
                 shape = RoundedCornerShape(12.dp),
                 visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation(),
                 keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
@@ -878,7 +878,8 @@ fun ResetPasswordScreen(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(52.dp),
+                        .height(52.dp)
+                        .testTag("update_password_btn"),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0288D1))
                 ) {
@@ -893,7 +894,7 @@ fun ResetPasswordScreen(
 
                 TextButton(
                     onClick = onCancel,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().testTag("cancel_reset_btn")
                 ) {
                     Text(
                         text = "Cancel & Return to Login",
