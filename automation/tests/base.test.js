@@ -20,7 +20,7 @@ const testContext = {
 
 before(async function() {
   logger.info('=== STARTING TEST FRAMEWORK EXECUTION ===');
-  this.timeout(120000); // 2 minutes startup timeout
+  this.timeout(300000); // 5 minutes startup timeout for first-time APK installation & emulator setup
   try {
     driverInstance = await DriverFactory.createDriver();
     
