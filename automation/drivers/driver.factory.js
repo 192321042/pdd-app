@@ -1,7 +1,23 @@
 const { remote } = require('webdriverio');
 const { execSync } = require('child_process');
+const fs = require('fs');
+const path = require('path');
 const config = require('../config/appium.config');
 const logger = require('../utilities/logger');
+
+function getAdbCmd() {
+  try {
+    execSync('adb --version', { stdio: 'ignore' });
+    return 'adb';
+  } catch (e) {
+    const localAppData = process.env.LOCALAPPDATA || 'C:\\Users\\Rajiv\\AppData\\Local';
+    const sdkAdb = path.join(localAppData, 'Android', 'Sdk', 'platform-tools', 'adb.exe');
+    if (fs.existsSync(sdkAdb)) {
+      return `"${sdkAdb}"`;
+    }
+    return 'adb';
+  }
+}
 
 class DriverFactory {
   /**
@@ -11,7 +27,8 @@ class DriverFactory {
   static detectDevice() {
     try {
       logger.info('Scanning for connected Android devices/emulators via ADB...');
-      const stdout = execSync('adb devices').toString();
+      const adbCmd = getAdbCmd();
+      const stdout = execSync(`${adbCmd} devices`).toString();
       const lines = stdout.split('\n').map(line => line.trim()).filter(line => line.length > 0);
       
       const devices = [];
@@ -34,7 +51,7 @@ class DriverFactory {
         logger.info(`Detected device: ${chosen}. Retrieving Android version...`);
         let version = '12.0';
         try {
-          version = execSync(`adb -s ${chosen} shell getprop ro.build.version.release`).toString().trim();
+          version = execSync(`${adbCmd} -s ${chosen} shell getprop ro.build.version.release`).toString().trim();
           logger.info(`Device ${chosen} runs Android ${version}`);
         } catch (verErr) {
           logger.warn(`Could not fetch OS version for device ${chosen}: ${verErr.message}`);
