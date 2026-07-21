@@ -81,7 +81,7 @@ jobs:
           arch: arm64-v8a
           profile: pixel
           disable-animations: true
-          emulator-options: -no-window -gpu swiftshader_indirect -no-audio -no-boot-anim -camera-back none
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot-save -no-audio -no-boot-anim -camera-back none
           script: |
             # Ensure ANDROID_HOME environment variables are explicitly exported for Appium
             export ANDROID_HOME=$ANDROID_SDK_ROOT
@@ -103,7 +103,7 @@ jobs:
             npx appium --base-path / --log logs/appium-server.log &
             
             # Wait for Appium Server to start listening
-            sleep 12
+            sleep 15
             
             # Run test suite
             export EXECUTION_MODE=APK
