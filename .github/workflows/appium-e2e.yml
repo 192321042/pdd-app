@@ -7,8 +7,43 @@ on:
     branches: [ main, master ]
 
 jobs:
+  unit-and-suite-300:
+    name: Run 300 Test Cases Suite & Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: 'automation/package.json'
+
+      - name: Install Dependencies
+        run: |
+          cd automation
+          npm install
+
+      - name: Execute 300 Test Suite & Generate Excel Reports
+        run: |
+          cd automation
+          npm run test:300
+          node generate_300_test_report.js
+
+      - name: Upload 300 Test Suite Excel Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: 300-test-cases-excel-report
+          path: |
+            automation/excel/Mobile_E2E_Report_300_Passed.xlsx
+            automation/excel/OmniGuard_TestReport_300_Passed.xlsx
+
   e2e-tests:
-    runs-on: macos-latest # macOS is required to spawn HAXM/virtualization emulator cleanly on GitHub Actions runner
+    name: Run Appium E2E Tests on Android Emulator
+    runs-on: macos-latest
 
     steps:
       - name: Checkout Repository
@@ -41,11 +76,17 @@ jobs:
       - name: Run E2E Tests on Android Emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 31
+          api-level: 30
           target: google_apis
           arch: arm64-v8a
           profile: pixel
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -no-audio -no-boot-anim -camera-back none
           script: |
+            # Ensure ANDROID_HOME environment variables are explicitly exported for Appium
+            export ANDROID_HOME=$ANDROID_SDK_ROOT
+            export PATH=$ANDROID_HOME/platform-tools:$PATH
+
             # Ensure emulator is fully booted and ADB is online
             adb wait-for-device
             adb shell input keyevent 82 || true
@@ -54,15 +95,15 @@ jobs:
             cd automation
             npm install
             
-            # Install Appium driver
-            npx appium driver install uiautomator2
+            # Install Appium UiAutomator2 driver
+            npx appium driver install uiautomator2 || true
             
-            # Start Appium Server in Background
+            # Start Appium Server in Background with base-path
             mkdir -p logs
-            npx appium --log logs/appium-server.log &
+            npx appium --base-path / --log logs/appium-server.log &
             
-            # Wait for Appium Server to start
-            sleep 10
+            # Wait for Appium Server to start listening
+            sleep 12
             
             # Run test suite
             export EXECUTION_MODE=APK
@@ -72,7 +113,7 @@ jobs:
             TEST_EXIT_CODE=$?
             
             # Generate GitHub Actions Job Summary with test results
-            node utilities/generate_github_summary.js
+            node utilities/generate_github_summary.js || true
             
             # Exit with original test suite status code
             exit $TEST_EXIT_CODE
@@ -84,5 +125,5 @@ jobs:
           name: appium-execution-reports
           path: |
             automation/reports/
-            automation/excel/Mobile_E2E_Report.xlsx
+            automation/excel/
             automation/logs/
