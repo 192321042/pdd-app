@@ -1,4 +1,4 @@
-name: selenium-tests.yml
+name: Selenium End-to-End Test Suite
 
 on:
   push:
@@ -7,8 +7,8 @@ on:
     branches: [ main, master ]
 
 jobs:
-  test-and-deploy:
-    name: test-and-deploy
+  selenium-e2e-tests:
+    name: Run Selenium E2E Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -33,13 +33,14 @@ jobs:
           cd automation
           npm install
 
-      - name: Execute 300 E2E Selenium & Mobile Test Suite
+      - name: Execute 300 E2E Selenium Test Suite
         run: |
           cd automation
           npm run test:300
           node generate_300_test_report.js
 
       - name: Generate GitHub Step Summary Report
+        if: always()
         run: |
           cd automation
           node utilities/generate_github_summary.js || true

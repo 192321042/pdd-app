@@ -89,7 +89,7 @@ class Gestures {
   /**
    * Swipe from start position to end position
    */
-  static async swipe(driver, startX, startY, endX, endY, duration = 800) {
+  static async swipe(driver, startX, startY, endX, endY, duration = 250) {
     await driver.performActions([
       {
         type: 'pointer',
@@ -109,7 +109,7 @@ class Gestures {
   static async swipeUp(driver, percentage = 0.8) {
     logger.info('Performing Swipe Up');
     const { width, height } = await driver.getWindowSize();
-    const x = Math.floor(width * 0.15);
+    const x = Math.floor(width * 0.5);
     const startY = Math.floor(height * percentage);
     const endY = Math.floor(height * (1 - percentage));
     await this.swipe(driver, x, startY, x, endY);
@@ -118,7 +118,7 @@ class Gestures {
   static async swipeDown(driver, percentage = 0.8) {
     logger.info('Performing Swipe Down');
     const { width, height } = await driver.getWindowSize();
-    const x = Math.floor(width * 0.15);
+    const x = Math.floor(width * 0.5);
     const startY = Math.floor(height * (1 - percentage));
     const endY = Math.floor(height * percentage);
     await this.swipe(driver, x, startY, x, endY);
@@ -147,18 +147,33 @@ class Gestures {
    */
   static async scrollUntilVisible(driver, elementSelector, maxRetries = 10) {
     logger.info(`Scrolling until element matching [${elementSelector}] is visible`);
+    const config = require('../config/appium.config');
+    try {
+      await driver.setTimeouts(0);
+    } catch (e) {}
+
+    let foundEl = null;
     for (let i = 0; i < maxRetries; i++) {
       try {
         const el = await driver.$(elementSelector);
         if (await el.isDisplayed()) {
           logger.info(`Element [${elementSelector}] is now visible after ${i} scrolls.`);
-          return el;
+          foundEl = el;
+          break;
         }
-      } catch (ignored) {}
+      } catch (ignored) { }
       await this.swipeUp(driver, 0.6);
       await driver.pause(500);
     }
-    throw new Error(`Element [${elementSelector}] was not found after ${maxRetries} scrolls.`);
+
+    try {
+      await driver.setTimeouts(config.timeouts.implicit);
+    } catch (e) {}
+
+    if (!foundEl) {
+      throw new Error(`Element [${elementSelector}] was not found after ${maxRetries} scrolls.`);
+    }
+    return foundEl;
   }
 
   /**
@@ -169,7 +184,7 @@ class Gestures {
     const { width, height } = await driver.getWindowSize();
     const midX = Math.floor(width / 2);
     const midY = Math.floor(height / 2);
-    
+
     await driver.performActions([
       {
         type: 'pointer',
@@ -204,7 +219,7 @@ class Gestures {
     const { width, height } = await driver.getWindowSize();
     const midX = Math.floor(width / 2);
     const midY = Math.floor(height / 2);
-    
+
     await driver.performActions([
       {
         type: 'pointer',

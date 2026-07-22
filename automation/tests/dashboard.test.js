@@ -184,6 +184,8 @@ describe('Dashboard Core Widgets & Profile Management Suite', function() {
   });
 
   it('TC_DASH_11: Verify health summary edit modal cancels correctly', async function() {
+    excelReporter.addStepLog(this.test.title, 'Menu Click', 'Navigate', 'Navigating to Profile settings');
+    await dashboardPage.navigateToSettings();
     excelReporter.addStepLog(this.test.title, 'Health Form', 'Click', 'Clicking edit health summary pencil button');
     const healthPencilSelector = '//*[contains(@content-desc, "Edit Health Summary") or @content-desc="Edit Health Summary"]';
     const editHealthPencil = await Gestures.scrollUntilVisible(driver, healthPencilSelector);

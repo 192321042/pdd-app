@@ -269,12 +269,8 @@ fun MainContainer(viewModel: EmergencyViewModel, onLogout: () -> Unit) {
                     NavigationBarItem(
                         selected = selected,
                         onClick = {
-                            navController.navigate(item.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
+                            if (currentRoute != item.route) {
+                                navController.navigate(item.route)
                             }
                         },
                         icon = { Icon(imageVector = item.icon, contentDescription = item.label) },
