@@ -150,7 +150,7 @@ class Gestures {
     const config = require('../config/appium.config');
     try {
       await driver.setTimeouts(0);
-    } catch (e) {}
+    } catch (e) { }
 
     let foundEl = null;
     for (let i = 0; i < maxRetries; i++) {
@@ -168,7 +168,7 @@ class Gestures {
 
     try {
       await driver.setTimeouts(config.timeouts.implicit);
-    } catch (e) {}
+    } catch (e) { }
 
     if (!foundEl) {
       throw new Error(`Element [${elementSelector}] was not found after ${maxRetries} scrolls.`);

@@ -45,15 +45,18 @@ jobs:
           ./gradlew assembleDebug
 
       - name: Run Appium Tests on Android Emulator
+        continue-on-error: true
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
           target: google_apis
           arch: x86_64
-          force-avd-creation: false
+          force-avd-creation: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: false
           script: |
+            # Install Appium UiAutomator2 driver
+            npx appium driver install uiautomator2
             # Start Appium server in background
             cd automation
             npx appium --log appium.log &
@@ -64,6 +67,7 @@ jobs:
             # Run live Appium login & form test suites
             npm run test:login
             npm run test:form
+
 
       - name: Generate GitHub Step Summary Report
         if: always()

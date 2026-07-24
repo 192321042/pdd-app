@@ -4,6 +4,9 @@ node_modules/
 # Test Reports and outputs
 reports/
 excel/*.xlsx
+!excel/Mobile_E2E_Report_300_Passed.xlsx
+!excel/OmniGuard_TestReport_300_Passed.xlsx
+
 
 # Debug logs and device layout dumps
 logs/
