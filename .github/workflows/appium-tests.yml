@@ -9,11 +9,17 @@ on:
 jobs:
   appium-mobile-tests:
     name: Appium Mobile E2E Testing
-    runs-on: macos-13
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Enable KVM Hardware Acceleration
+        run: |
+          sudo echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm-nodes.rules
+          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
+          sudo usermod -aG kvm $USER
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -45,7 +51,6 @@ jobs:
           ./gradlew assembleDebug
 
       - name: Run Appium Tests on Android Emulator
-        continue-on-error: true
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
@@ -53,21 +58,39 @@ jobs:
           arch: x86_64
           force-avd-creation: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          disable-animations: false
+          disable-animations: true
           script: |
+            # Ensure ANDROID_HOME environment variables are explicitly exported for Appium
+            export ANDROID_HOME=$ANDROID_SDK_ROOT
+            export PATH=$ANDROID_HOME/platform-tools:$PATH
+            
+            # Ensure emulator is fully booted and ADB is online
+            adb wait-for-device
+            adb shell input keyevent 82 || true
+            
+            cd automation
+            
             # Install Appium UiAutomator2 driver
             npx appium driver install uiautomator2
-            # Start Appium server in background
-            cd automation
-            npx appium --log appium.log &
-            # Wait for Appium server to start
-            until curl -s http://localhost:4723/status; do
-              sleep 1
+            
+            # Start Appium server in background on 127.0.0.1
+            npx appium --address 127.0.0.1 --port 4723 --base-path / --log appium.log &
+            
+            # Wait for Appium server to start (timeout after 60 seconds)
+            timeout=60
+            elapsed=0
+            until curl -s http://127.0.0.1:4723/status > /dev/null; do
+              if [ $elapsed -ge $timeout ]; then
+                echo "Appium server failed to start within $timeout seconds"
+                cat appium.log
+                exit 1
+              fi
+              sleep 2
+              elapsed=$((elapsed + 2))
             done
-            # Run live Appium login & form test suites
-            npm run test:login
-            npm run test:form
-
+            
+            # Run live Appium login & form test suites together to generate mochawesome index.json
+            npx mocha tests/login.test.js tests/form.test.js --timeout 300000 --reporter mochawesome --reporter-options reportDir=reports,reportFilename=index,html=true,json=true
 
       - name: Generate GitHub Step Summary Report
         if: always()
