@@ -77,17 +77,8 @@ jobs:
             npx appium --address 127.0.0.1 --port 4723 --base-path / --log appium.log &
             
             # Wait for Appium server to start (timeout after 60 seconds)
-            timeout=60
-            elapsed=0
-            until curl -s http://127.0.0.1:4723/status > /dev/null; do
-              if [ $elapsed -ge $timeout ]; then
-                echo "Appium server failed to start within $timeout seconds"
-                cat appium.log
-                exit 1
-              fi
-              sleep 2
-              elapsed=$((elapsed + 2))
-            done
+            n=0; until [ $n -ge 30 ] || curl -s http://127.0.0.1:4723/status > /dev/null; do sleep 2; n=$((n+1)); done
+            curl -s http://127.0.0.1:4723/status > /dev/null || { echo "Appium server failed to start"; cat appium.log; exit 1; }
             
             # Run live Appium login & form test suites together with the 300 test cases suite to generate mochawesome index.json
             npx mocha tests/login.test.js tests/form.test.js tests/suite_300.test.js --timeout 300000 --reporter mochawesome --reporter-options reportDir=reports,reportFilename=index,html=true,json=true
