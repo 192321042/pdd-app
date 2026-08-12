@@ -81,7 +81,7 @@ jobs:
             curl -s http://127.0.0.1:4723/status > /dev/null || { echo "Appium server failed to start"; cat appium.log; exit 1; }
             
             # Run live Appium login & form test suites together with the 300 test cases suite to generate mochawesome index.json
-            npx mocha tests/login.test.js tests/form.test.js tests/suite_300.test.js --timeout 300000 --reporter mochawesome --reporter-options reportDir=reports,reportFilename=index,html=true,json=true
+            ./node_modules/.bin/mocha tests/login.test.js tests/form.test.js tests/suite_300.test.js --timeout 300000 --reporter mochawesome --reporter-options reportDir=reports,reportFilename=index,html=true,json=true
 
       - name: Generate GitHub Step Summary Report
         if: always()
