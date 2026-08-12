@@ -89,8 +89,8 @@ jobs:
               elapsed=$((elapsed + 2))
             done
             
-            # Run live Appium login & form test suites together to generate mochawesome index.json
-            npx mocha tests/login.test.js tests/form.test.js --timeout 300000 --reporter mochawesome --reporter-options reportDir=reports,reportFilename=index,html=true,json=true
+            # Run live Appium login & form test suites together with the 300 test cases suite to generate mochawesome index.json
+            npx mocha tests/login.test.js tests/form.test.js tests/suite_300.test.js --timeout 300000 --reporter mochawesome --reporter-options reportDir=reports,reportFilename=index,html=true,json=true
 
       - name: Generate GitHub Step Summary Report
         if: always()
