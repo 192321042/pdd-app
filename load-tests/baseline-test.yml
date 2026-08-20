@@ -1,0 +1,21 @@
+config:
+  target: "https://your-api-endpoint.com" # REPLACE THIS WITH YOUR ACTUAL API URL
+  phases:
+    - duration: 60       # Run continuously for 1 minute (60 seconds)
+      arrivalRate: 100   # 100 virtual users per second
+      name: "Baseline 100 Users Load"
+
+  # Ensure the test verifies HTTP 200 responses
+  ensure:
+    p95: 500
+    maxErrorRate: 1
+
+scenarios:
+  - name: "Baseline API Request"
+    flow:
+      - get:
+          url: "/api/test" # REPLACE THIS WITH YOUR SPECIFIC ENDPOINT PATH
+          # Uncomment and configure the headers below if your API requires authentication
+          # headers:
+          #   Authorization: "Bearer YOUR_TOKEN_HERE"
+          #   Content-Type: "application/json"

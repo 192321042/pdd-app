@@ -1,0 +1,13 @@
+{
+  "name": "load-tests",
+  "version": "1.0.0",
+  "description": "Baseline and Load Testing using Artillery",
+  "main": "index.js",
+  "scripts": {
+    "test:load": "artillery run baseline-test.yml"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "artillery": "^2.0.11"
+  }
+}

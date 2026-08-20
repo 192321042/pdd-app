@@ -1,0 +1,36 @@
+name: Baseline Load Testing
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  load-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd load-tests
+          npm install
+
+      - name: Run Artillery Load Test
+        run: |
+          cd load-tests
+          npm run test:load > load-test-report.txt
+
+      - name: Upload Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: artillery-load-test-report
+          path: load-tests/load-test-report.txt
