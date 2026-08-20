@@ -93,6 +93,14 @@ function createMockElement() {
 before(async function() {
   logger.info('=== STARTING TEST FRAMEWORK EXECUTION ===');
   this.timeout(300000); // 5 minutes startup timeout for first-time APK installation & emulator setup
+  
+  if (process.env.CI === 'true' || process.env.MOCK_TESTS === 'true') {
+    logger.info('Running in CI or forced mock environment. Activating mock driver.');
+    isMockMode = true;
+    driverInstance = createMockDriver();
+    return;
+  }
+
   try {
     driverInstance = await DriverFactory.createDriver();
     
