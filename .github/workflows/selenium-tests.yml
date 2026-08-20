@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-          cache-dependency-path: 'automation/package.json'
+          cache-dependency-path: 'appium-tests/package.json'
 
       - name: Setup Java JDK 17
         uses: actions/setup-java@v4
@@ -30,19 +30,19 @@ jobs:
 
       - name: Install Automation Dependencies
         run: |
-          cd automation
+          cd appium-tests
           npm install
 
       - name: Execute 300 E2E Selenium Test Suite
         run: |
-          cd automation
+          cd appium-tests
           npm run test:300
           node generate_300_test_report.js
 
       - name: Generate GitHub Step Summary Report
         if: always()
         run: |
-          cd automation
+          cd appium-tests
           node utilities/generate_github_summary.js || true
 
       - name: Upload E2E Selenium Report Artifact
@@ -51,8 +51,8 @@ jobs:
         with:
           name: E2E-Selenium-Report
           path: |
-            automation/reports/
-            automation/excel/Mobile_E2E_Report_300_Passed.xlsx
+            appium-tests/reports/
+            appium-tests/excel/Mobile_E2E_Report_300_Passed.xlsx
 
       - name: Upload QA Test Case Suites Artifact
         if: always()
@@ -60,6 +60,6 @@ jobs:
         with:
           name: QA-Test-Case-Suites
           path: |
-            automation/tests/
-            automation/excel/OmniGuard_TestReport_300_Passed.xlsx
-            automation/excel/
+            appium-tests/tests/
+            appium-tests/excel/OmniGuard_TestReport_300_Passed.xlsx
+            appium-tests/excel/
