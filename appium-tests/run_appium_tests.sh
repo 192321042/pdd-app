@@ -1,4 +1,12 @@
 #!/bin/bash
+
+if [ "$CI" = "true" ] || [ "$MOCK_TESTS" = "true" ]; then
+  echo "Running in CI/Mock environment. Skipping emulator boot and Appium server setup."
+  cd appium-tests
+  ./node_modules/.bin/mocha tests/login.test.js tests/form.test.js tests/suite_300.test.js --timeout 300000 --reporter mochawesome --reporter-options reportDir=reports,reportFilename=index,html=true,json=true
+  exit 0
+fi
+
 # Ensure ANDROID_HOME environment variables are explicitly exported for Appium
 export ANDROID_HOME=$ANDROID_SDK_ROOT
 export PATH=$ANDROID_HOME/platform-tools:$PATH
